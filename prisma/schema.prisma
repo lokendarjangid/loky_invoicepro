@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  clerkId       String    @unique
+  email         String    @unique
+  name          String?
+  businessName  String?
+  businessEmail String?
+  businessPhone String?
+  businessAddress String?
+  logo          String?
+  stripeCustomerId String?
+  subscription  String?   @default("free")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  clients       Client[]
+  invoices      Invoice[]
+}
+
+model Client {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  email       String
+  phone       String?
+  address     String?
+  company     String?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices    Invoice[]
+  
+  @@index([userId])
+}
+
+model Invoice {
+  id              String    @id @default(cuid())
+  userId          String
+  clientId        String
+  invoiceNumber   String    @unique
+  status          String    @default("draft") // draft, sent, paid, overdue, cancelled
+  issueDate       DateTime  @default(now())
+  dueDate         DateTime
+  subtotal        Float     @default(0)
+  tax             Float     @default(0)
+  discount        Float     @default(0)
+  total           Float     @default(0)
+  notes           String?
+  terms           String?
+  paidAt          DateTime?
+  paymentMethod   String?   // stripe, manual, etc
+  stripePaymentId String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client          Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  items           InvoiceItem[]
+  
+  @@index([userId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Float    @default(1)
+  rate        Float
+  amount      Float
+  createdAt   DateTime @default(now())
+  
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  @@index([invoiceId])
+}
