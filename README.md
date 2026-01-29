@@ -2,6 +2,16 @@
 
 A full-stack invoice management platform built with Next.js 15, featuring client management, invoice creation, payment tracking, and more.
 
+![InvoicePro](https://img.shields.io/badge/Status-Production%20Ready-success)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+
+## 🌐 Live Demo
+
+**GitHub:** [https://github.com/lokendarjangid/loky_invoicepro](https://github.com/lokendarjangid/loky_invoicepro)
+
+**Live App:** Coming soon after deployment
+
 ## 🚀 Features
 
 - **User Authentication** - Secure auth with Clerk
